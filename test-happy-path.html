@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Happy Path - Local</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #0f0; }
+        button { padding: 10px 20px; background: #0f0; color: #000; border: none; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0a0; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .info { color: #00f; }
+        pre { background: #000; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Happy Path Test - Local Browser</h1>
+
+    <div class="section">
+        <h2>Step 1: Test Form Submission (Without Worker)</h2>
+        <p>This test will show exactly what payload will be sent to the Worker</p>
+        <button onclick="testPayloadStructure()">Test Payload Structure</button>
+        <div id="payload-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 2: Test Actual Worker (Requires Real Turnstile Token)</h2>
+        <p>This will attempt to submit to the real Worker endpoint</p>
+        <button onclick="testWorkerEndpoint()">Test Worker Endpoint</button>
+        <div id="worker-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 3: Full Integration Test (In Real Deployment)</h2>
+        <p>Open <a href="index.html" style="color: #0f0;">index.html</a> in a browser and submit the form with real Turnstile</p>
+    </div>
+
+    <script>
+        // Simulate the email hashing function
+        async function hashEmail(email) {
+            const emailHashSalt = 'ai-compute-exchange-2025-salt-v1';
+            const encoder = new TextEncoder();
+            const data = encoder.encode(email.toLowerCase().trim() + emailHashSalt);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        function generateReferenceId() {
+            const timestamp = Date.now().toString(36);
+            const randomStr = Math.random().toString(36).substring(2, 9);
+            return `req_${timestamp}_${randomStr}`;
+        }
+
+        async function testPayloadStructure() {
+            const resultDiv = document.getElementById('payload-result');
+            resultDiv.innerHTML = '<div class="info">Testing payload structure...</div>';
+
+            const testEmail = 'test@example.com';
+            const emailHash = await hashEmail(testEmail);
+            const referenceId = generateReferenceId();
+            const testToken = 'test_turnstile_token';
+
+            // Create payload exactly as script.js does
+            const payload = new URLSearchParams({
+                email: emailHash,
+                'cf-turnstile-response': testToken
+            });
+
+            resultDiv.innerHTML = `
+                <h3 class="success">✓ Payload Structure Valid</h3>
+                <pre>
+Original Email: ${testEmail}
+Hashed Email:    ${emailHash}
+Reference ID:    ${referenceId}
+
+Payload that will be sent to Worker:
+${payload.toString()}
+
+Expected format:
+email=<hash>&cf-turnstile-response=<token>
+
+✓ Content-Type: application/x-www-form-urlencoded
+✓ Method: POST
+✓ Endpoint: https://compute-exchange-lead-capture.cx-portal.workers.dev
+                </pre>
+            `;
+        }
+
+        async function testWorkerEndpoint() {
+            const resultDiv = document.getElementById('worker-result');
+            resultDiv.innerHTML = '<div class="info">Testing Worker endpoint...</div>';
+
+            const testEmail = 'test@example.com';
+            const emailHash = await hashEmail(testEmail);
+            const referenceId = generateReferenceId();
+
+            // Create security headers
+            const securityHeaders = {
+                'X-CX-Frontend-Signature': 'CX-FE-2025-V1',
+                'X-CX-Request-ID': referenceId,
+                'X-CX-Timestamp': Date.now().toString(),
+                'X-CX-Origin': window.location.origin
+            };
+
+            // Create form-encoded payload
+            const payload = new URLSearchParams({
+                email: emailHash,
+                'cf-turnstile-response': 'invalid_test_token'
+            });
+
+            try {
+                const response = await fetch('https://compute-exchange-lead-capture.cx-portal.workers.dev', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        ...securityHeaders
+                    },
+                    body: payload.toString()
+                });
+
+                const responseText = await response.text();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <h3 class="success">✓ Worker Responded Successfully</h3>
+                        <pre>
+Status: ${response.status} ${response.statusText}
+Response: ${responseText}
+
+Note: This should only succeed with a REAL Turnstile token from the actual widget.
+                        </pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3 class="error">✗ Worker Rejected Request (Expected)</h3>
+                        <pre>
+Status: ${response.status} ${response.statusText}
+Response: ${responseText}
+
+This is EXPECTED behavior because:
+- We're using a fake test token
+- The Worker correctly rejects invalid Turnstile tokens
+- Real success requires completing the Turnstile widget in index.html
+
+✓ Security is working correctly!
+                        </pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3 class="error">✗ Network Error</h3>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

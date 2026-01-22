@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Compute Exchange - Zero-Latency GPU compute marketplace with privacy-first arbitrage">
+    <title>AI Compute Exchange | Zero-Latency GPU Marketplace</title>
+
+    <!-- DNS Prefetch & Preconnect for Performance -->
+    <link rel="dns-prefetch" href="https://bdtec.ai">
+    <link rel="preconnect" href="https://bdtec.ai" crossorigin>
+
+    <!-- Preload Critical CSS -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Preload JavaScript (Deferred for performance) -->
+    <link rel="preload" href="config.js" as="script">
+    <link rel="preload" href="script.js" as="script">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="GPU compute, H100, H200, AI infrastructure, high-frequency trading, zero-latency, GPU marketplace">
+    <meta name="author" content="AI Compute Exchange">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AI Compute Exchange | Zero-Latency GPU Marketplace">
+    <meta property="og:description" content="High-frequency GPU compute marketplace with zero-latency matching and privacy-first arbitrage">
+    <meta property="og:url" content="https://bdtec.ai">
+    <meta property="og:image" content="https://bdtec.ai/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Compute Exchange | Zero-Latency GPU Marketplace">
+    <meta name="twitter:description" content="High-frequency GPU compute marketplace with zero-latency matching">
+
+    <!-- Security & Privacy -->
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+    <!-- Content Security Policy (Zero-Trust Posture) -->
+    <!-- Note: frame-ancestors and X-Frame-Options only work via HTTP headers, not meta tags -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: https:;
+        font-src 'self';
+        connect-src 'self' https://*.vercel.app https://*.workers.dev https://formspree.io https://compute-exchange-lead-capture.cx-portal.workers.dev;
+        frame-src https://challenges.cloudflare.com;
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+        upgrade-insecure-requests;
+    ">
+
+    <!-- Cloudflare Turnstile (Bot Defense) -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+
+    <!-- Favicon (add your favicon files) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://bdtec.ai">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="8" fill="#4F46E5"/>
+                    <path d="M12 20L18 26L28 14" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="logo-text">AI Compute Exchange</span>
+            </div>
+            <nav class="nav">
+                <a href="#features">Features</a>
+                <a href="#architecture">Architecture</a>
+                <a href="#privacy">Privacy</a>
+                <button class="cta-button" onclick="scrollToForm()">Get Access</button>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="badge">
+                    <span class="pulse"></span>
+                    Now Live: H100 & H200 Clusters
+                </div>
+                <h1 class="hero-title">
+                    Zero-Latency GPU<br>
+                    <span class="gradient-text">Compute Marketplace</span>
+                </h1>
+                <p class="hero-subtitle">
+                    High-frequency matching engine for institutional GPU compute.
+                    Sub-millisecond arbitrage with privacy-first architecture.
+                </p>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value">0.8ms</div>
+                        <div class="metric-label">Match Latency</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">99.99%</div>
+                        <div class="metric-label">Uptime SLA</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">12k+</div>
+                        <div class="metric-label">H100s Online</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">&lt;50ms</div>
+                        <div class="metric-label">Response Time</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lead Capture Form -->
+            <div class="form-container" id="waitlist-form">
+                <div class="form-header">
+                    <h3>Institutional Access</h3>
+                    <p class="form-subtitle">Join the queue for early access</p>
+                </div>
+                <form id="lead-form" class="lead-form">
+                    <div class="input-group">
+                        <label for="company" class="input-label">Company</label>
+                        <input
+                            type="text"
+                            id="company"
+                            name="company"
+                            class="input-field"
+                            placeholder="e.g., Acme AI Labs"
+                            required
+                            autocomplete="organization"
+                        >
+                    </div>
+                    <div class="input-group">
+                        <label for="email" class="input-label">Work Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="input-field"
+                            placeholder="you@company.com"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+
+                    <!-- Honeypot Field (Hidden from users, visible to bots) -->
+                    <div class="input-group" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+                        <label for="website-url" class="input-label">Website URL (leave blank)</label>
+                        <input
+                            type="text"
+                            id="website-url"
+                            name="website-url"
+                            class="input-field"
+                            tabindex="-1"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <!-- Cloudflare Turnstile Widget (Invisible Mode) -->
+                    <div class="input-group" style="display: none;">
+                        <div id="turnstile-widget"></div>
+                    </div>
+
+                    <button type="submit" class="submit-button" id="submit-btn" disabled>
+                        <span class="button-text">Verifying security...</span>
+                        <span class="button-loader"></span>
+                    </button>
+                    <div class="form-footer">
+                        <span class="status-indicator"></span>
+                        <span class="queue-position">256 organizations in queue</span>
+                    </div>
+                </form>
+                <div class="success-state" id="success-state">
+                    <div class="success-icon">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="24" fill="#10B981"/>
+                            <path d="M14 24L20 30L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Request Confirmed</h3>
+                    <p>Your organization has been queued. Our team will reach out within 24 hours.</p>
+                    <div class="confirmation-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Reference ID:</span>
+                            <span class="detail-value" id="ref-id">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Queue Position:</span>
+                            <span class="detail-value">#257</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title">Institutional-Grade Infrastructure</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Zero-Latency Matching</h3>
+                    <p>Sub-millisecond order matching with collocated execution engines. No brokerage latency, no hidden delays.</p>
+                    <div class="tech-spec">Engine: Rust-based matching core</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Privacy-First Arbitrage</h3>
+                    <p>Your compute needs never leave your trust boundary. Zero-knowledge proofs for capacity verification.</p>
+                    <div class="tech-spec">Architecture: Zero-knowledge proofs</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="12" y1="22.08" x2="12" y2="12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Edge-Deployed Execution</h3>
+                    <p>Distributed across 12 edge regions. Your jobs execute where the power is cheapest and latency is lowest.</p>
+                    <div class="tech-spec">Deployment: 12 global edge regions</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Real-Time Pricing</h3>
+                    <p>Spot pricing updates every 100ms. Dynamic load balancing across providers with transparent fee structures.</p>
+                    <div class="tech-spec">Update freq: 100ms spot prices</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="8" y1="21" x2="16" y2="21" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="12" y1="17" x2="12" y2="21" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>API-First Design</h3>
+                    <p>RESTful API with WebSocket streaming for real-time updates. Full programmatic control over your compute portfolio.</p>
+                    <div class="tech-spec">Protocol: REST + WebSockets</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17l10 5 10-5" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12l10 5 10-5" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Multi-Cloud Orchestration</h3>
+                    <p>Unified interface across AWS, GCP, Azure, and specialized GPU providers. Single contract, infinite capacity.</p>
+                    <div class="tech-spec">Providers: 4+ major clouds</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section class="architecture" id="architecture">
+            <h2 class="section-title">How It Works</h2>
+            <div class="arch-diagram">
+                <div class="arch-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Submit Demand</h3>
+                        <p>Define your compute requirements: GPU type, duration, region preferences, and budget constraints.</p>
+                    </div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Zero-Knowledge Matching</h3>
+                        <p>Our matching engine finds optimal capacity without revealing your identity or specific requirements.</p>
+                    </div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Instant Execution</h3>
+                        <p>Jobs spin up in &lt;2 seconds. Auto-scaling, fault tolerance, and real-time monitoring built in.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-dot red"></span>
+                    <span class="code-dot yellow"></span>
+                    <span class="code-dot green"></span>
+                    <span class="code-title">API Response Example</span>
+                </div>
+                <pre><code class="language-json">{
+  "match_id": "req_3hK8nN2mP9q",
+  "latency_ms": 0.8,
+  "capacity": {
+    "gpu_type": "H100-80GB",
+    "available": 2400,
+    "region": "us-east-1",
+    "price_per_hour": 2.45
+  },
+  "execution_time_ms": 1800
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Privacy Section -->
+        <section class="privacy" id="privacy">
+            <div class="privacy-content">
+                <h2 class="section-title">Privacy as Non-Negotiable</h2>
+                <p class="privacy-intro">
+                    We don't just respect privacy—we architect for it. Your data never touches centralized storage.
+                </p>
+                <div class="privacy-grid">
+                    <div class="privacy-item">
+                        <div class="privacy-icon">🔒</div>
+                        <h3>No Email Logs</h3>
+                        <p>Email addresses are hashed client-side before transmission. We never see plaintext.</p>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-icon">🛡️</div>
+                        <h3>No Destination Tracking</h3>
+                        <p>Edge functions process requests without logging storage endpoints. Data in motion, never at rest.</p>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-icon">⚡</div>
+                        <h3>99.99% Uptime SLA</h3>
+                        <p>Redundant edge infrastructure guarantees zero downtime with automatic failover protection.</p>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-icon">🔐</div>
+                        <h3>Zero-Knowledge Proofs</h3>
+                        <p>Verify capacity and budget without revealing your specific requirements to the marketplace.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                            <rect width="40" height="40" rx="8" fill="#4F46E5"/>
+                            <path d="M12 20L18 26L28 14" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="logo-text">AI Compute Exchange</span>
+                    </div>
+                    <p class="footer-tagline">Zero-latency GPU compute for the AI infrastructure era.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#architecture">Architecture</a>
+                        <a href="#privacy">Privacy</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">SLA</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Contact</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI Compute Exchange. All rights reserved.</p>
+                <p class="tech-badge">Built for institutional scale</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Optional configuration file (copy from config.example.js) -->
+    <!-- Deferred loading for optimal performance -->
+    <script src="config.js" defer></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
