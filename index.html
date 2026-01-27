@@ -150,6 +150,16 @@
                             autocomplete="email"
                         >
                     </div>
+                    <div class="input-group">
+                        <label for="gpu-scale" class="input-label">GPU Scale</label>
+                        <select id="gpu-scale" name="gpu-scale" class="input-field" required>
+                            <option value="">Select your GPU needs</option>
+                            <option value="testing">Testing (&lt;100 GPUs)</option>
+                            <option value="team">Team Scale (100-1,000 GPUs)</option>
+                            <option value="department">Department (1,000-10,000 GPUs)</option>
+                            <option value="enterprise">Enterprise (10,000+ GPUs)</option>
+                        </select>
+                    </div>
 
                     <!-- Honeypot Field (Hidden from users, visible to bots) -->
                     <div class="input-group" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">

@@ -22,9 +22,10 @@ export default {
     const formData = await request.formData();
     const email = formData.get("email");
     const company = formData.get("company");
+    const gpuScale = formData.get("gpuScale");
     const turnstileToken = formData.get("cf-turnstile-response");
 
-    console.log('New lead:', { email, company });
+    console.log('New lead:', { email, company, gpuScale });
 
     // 1. Verify Turnstile
     const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
@@ -56,8 +57,9 @@ export default {
     // 2. Save to KV - Storing CLEAR email for easy communication
     const id = crypto.randomUUID();
     await env.WAITLIST_STORAGE.put(id, JSON.stringify({
-      email,  // Clear text email - you can email them directly!
+      email,      // Clear text email - you can email them directly!
       company,
+      gpuScale,   // Lead qualification: testing/team/department/enterprise
       timestamp: new Date().toISOString(),
       id
     }));

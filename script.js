@@ -327,6 +327,7 @@ async function racePatternSubmit(payload) {
                 body = new URLSearchParams({
                     company: payload.company,
                     email: payload.email, // Clear email now
+                    gpu_scale: payload.gpuScale,
                     reference_id: payload.referenceId,
                     _subject: `New Lead: ${payload.company}`
                 });
@@ -334,10 +335,11 @@ async function racePatternSubmit(payload) {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 };
             } else {
-                // Primary Worker - send clear email + company
+                // Primary Worker - send clear email + company + gpu scale
                 body = new URLSearchParams({
                     email: payload.email,
                     company: payload.company,
+                    gpuScale: payload.gpuScale,
                     'cf-turnstile-response': payload.turnstileToken
                 });
                 headers = {
@@ -584,7 +586,8 @@ async function handleFormSubmit(event) {
     // Sanitize inputs
     const sanitizedData = {
         company: Security.sanitizeString(formData.get('company'), 100),
-        email: Security.sanitizeString(formData.get('email'), CONFIG.maxEmailLength)
+        email: Security.sanitizeString(formData.get('email'), CONFIG.maxEmailLength),
+        gpuScale: Security.sanitizeString(formData.get('gpu-scale'), 20)
     };
 
     // Generate reference ID
@@ -601,6 +604,7 @@ async function handleFormSubmit(event) {
         timestamp: Date.now(),
         company: sanitizedData.company,
         email: sanitizedData.email, // Clear text - you can email them directly!
+        gpuScale: sanitizedData.gpuScale, // Lead qualification metric
         turnstileToken: window.turnstileToken, // For backend verification
         security: {
             signature: CONFIG.frontendSignature,
