@@ -833,13 +833,13 @@ Telemetry.trackFormView();
 // ============================================================================
 
 /**
- * Smooth scroll to form
+ * Focus on first input field (form is now visible on screen)
  */
 function scrollToForm() {
-    document.getElementById('waitlist-form').scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-    });
+    const firstInput = document.querySelector('#lead-form .input-field');
+    if (firstInput) {
+        firstInput.focus();
+    }
 }
 
 // Expose globally
