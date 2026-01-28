@@ -134,18 +134,20 @@ body {
 }
 
 /* =============================================================================
-   HERO SECTION
+   HERO & FORM - TWO COLUMN LAYOUT
    ============================================================================= */
 
-.hero {
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-    padding: 4rem 0;
+.split-screen {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: start;
+    padding-top: 6rem;
+    gap: 4rem;
 }
 
 .hero-content {
-    max-width: 700px;
+    max-width: 600px;
 }
 
 .badge {
@@ -163,7 +165,7 @@ body {
 }
 
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 600;
     letter-spacing: -0.03em;
     line-height: 1.1;
@@ -176,40 +178,39 @@ body {
 }
 
 .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 2.5rem;
-    max-width: 500px;
+    max-width: 450px;
 }
 
 /* =============================================================================
-   WAITLIST FORM
+   FORM CONTAINER - RIGHT COLUMN
    ============================================================================= */
 
-.waitlist-section {
-    padding: 4rem 0;
+.form-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2rem;
 }
 
-.waitlist-container {
-    max-width: 450px;
-    margin: 0 auto;
+.form-header {
+    margin-bottom: 1.5rem;
 }
 
-.waitlist-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.waitlist-header h2 {
-    font-size: 1.75rem;
+.form-header h2 {
+    font-size: 1.25rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
-.waitlist-header p {
+.form-header p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
     font-size: 0.875rem;
     color: var(--text-secondary);
 }
@@ -404,13 +405,25 @@ body {
    RESPONSIVE
    ============================================================================= */
 
+@media (max-width: 900px) {
+    .split-screen {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 3rem 0;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .form-container {
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 0 1.5rem;
-    }
-
-    .hero {
-        padding: 3rem 0;
     }
 
     .hero-title {
@@ -419,6 +432,10 @@ body {
 
     .nav {
         display: none;
+    }
+
+    .split-screen {
+        padding: 2rem 0;
     }
 }
 
