@@ -836,7 +836,7 @@ Telemetry.trackFormView();
  * Smooth scroll to form
  */
 function scrollToForm() {
-    document.getElementById('waitlist-form').scrollIntoView({
+    document.querySelector('.waitlist-section').scrollIntoView({
         behavior: 'smooth',
         block: 'center'
     });
