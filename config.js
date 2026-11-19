@@ -9,7 +9,7 @@ window.CX_CONFIG = {
     turnstileSiteKey: '0x4AAAAAACNkgGWXXZi6sAmT',
 
     // Debug mode (set to false in production)
-    debug: true
+    debug: false
 };
 
 // Log configuration on load
