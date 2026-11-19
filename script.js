@@ -484,8 +484,6 @@ const UI = {
             console.error('✗ Invalid referenceId passed to showSuccess:', referenceId);
             this.refIdDisplay.textContent = 'Processing...';
         }
-
-        this.updateQueuePosition();
     },
 
     /**
