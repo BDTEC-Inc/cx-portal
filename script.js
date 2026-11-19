@@ -11,6 +11,12 @@
  * Architecture: Privacy-first with institutional-grade security
  */
 
+// Console output only when config.js sets debug: true. In production this is
+// silent: no validation details, tokens, or server responses in the console.
+const log = (window.CX_CONFIG && window.CX_CONFIG.debug)
+    ? console
+    : { log() {}, debug() {}, info() {}, warn() {}, error() {} };
+
 // ============================================================================
 // SECURITY CONFIGURATION
 // ============================================================================
@@ -161,11 +167,11 @@ const Security = {
 
         // Turnstile tokens are typically 200-1000 characters (invisible mode can be longer)
         const isValidLength = token.length >= 100 && token.length <= 2000;
-        console.log('Token length check:', token.length, 'Valid:', isValidLength);
+        log.log('Token length check:', token.length, 'Valid:', isValidLength);
 
         // Check if token starts with expected format (0.xxxx)
         const hasValidPrefix = token.startsWith('0.');
-        console.log('Token prefix check:', hasValidPrefix);
+        log.log('Token prefix check:', hasValidPrefix);
 
         return isValidLength && hasValidPrefix;
     },
@@ -181,36 +187,36 @@ const Security = {
 
         // Check honeypot (silent bot detection)
         if (this.isBot(formData.get('website-url'))) {
-            console.warn('Bot detected via honeypot field');
+            log.warn('Bot detected via honeypot field');
             return { valid: false, errors: ['Bot detected'], silent: true };
         }
 
         // Validate email
         const email = formData.get('email');
-        console.debug('Validating email:', email);
+        log.debug('Validating email:', email);
         if (!this.validateEmail(email)) {
-            console.error('Email validation failed for:', email);
+            log.error('Email validation failed for:', email);
             errors.push('Invalid email address');
         }
 
         // Validate company (required, sanitized)
         const company = formData.get('company');
-        console.debug('Validating company:', company);
+        log.debug('Validating company:', company);
         if (!company || company.trim().length < 2) {
             errors.push('Company name is required');
         }
 
         // Validate Turnstile token
-        console.debug('Validating Turnstile token:', window.turnstileToken ? `Present (${window.turnstileToken.length} chars)` : 'MISSING');
-        console.debug('Token validation check:', this.validateTurnstileToken(window.turnstileToken));
+        log.debug('Validating Turnstile token:', window.turnstileToken ? `Present (${window.turnstileToken.length} chars)` : 'MISSING');
+        log.debug('Token validation check:', this.validateTurnstileToken(window.turnstileToken));
         if (!this.validateTurnstileToken(window.turnstileToken)) {
-            console.error('Turnstile token validation failed');
-            console.error('Token value:', window.turnstileToken);
-            console.error('Token length:', window.turnstileToken?.length);
+            log.error('Turnstile token validation failed');
+            log.error('Token value:', window.turnstileToken);
+            log.error('Token length:', window.turnstileToken?.length);
             errors.push('Please complete the security verification');
         }
 
-        console.debug('Validation result:', errors.length === 0 ? 'VALID' : 'INVALID', errors);
+        log.debug('Validation result:', errors.length === 0 ? 'VALID' : 'INVALID', errors);
 
         return {
             valid: errors.length === 0,
@@ -397,7 +403,7 @@ async function racePatternSubmit(payload) {
             clearTimeout(timeoutId);
 
             // Log error without revealing endpoint details (security)
-            console.debug(`Request ${index} (${index === CONFIG.edgeEndpoints.length ? 'fallback' : 'primary'}) failed:`, error.message);
+            log.debug(`Request ${index} (${index === CONFIG.edgeEndpoints.length ? 'fallback' : 'primary'}) failed:`, error.message);
 
             return {
                 success: false,
@@ -472,16 +478,16 @@ const UI = {
      * @param {string} referenceId - Submission reference ID
      */
     showSuccess(referenceId) {
-        console.log('showSuccess called with referenceId:', referenceId, 'Type:', typeof referenceId);
+        log.log('showSuccess called with referenceId:', referenceId, 'Type:', typeof referenceId);
         this.form.style.display = 'none';
         this.successState.classList.add('active');
 
         // Defensive: Ensure referenceId is valid before setting
         if (referenceId && typeof referenceId === 'string' && referenceId !== 'NaN') {
             this.refIdDisplay.textContent = referenceId;
-            console.log('✓ Reference ID set to:', referenceId);
+            log.log('✓ Reference ID set to:', referenceId);
         } else {
-            console.error('✗ Invalid referenceId passed to showSuccess:', referenceId);
+            log.error('✗ Invalid referenceId passed to showSuccess:', referenceId);
             this.refIdDisplay.textContent = 'Processing...';
         }
     },
@@ -495,7 +501,7 @@ const UI = {
     showError(message, silent = false) {
         // Silent failure for bots (don't reveal bot detection)
         if (silent) {
-            console.warn('Silent rejection:', message);
+            log.warn('Silent rejection:', message);
             return;
         }
 
@@ -534,16 +540,16 @@ const UI = {
         if (queuePosition) {
             const currentText = queuePosition.textContent.replace('#', '').trim();
             const currentPosition = parseInt(currentText);
-            console.log('Current queue position:', currentPosition);
+            log.log('Current queue position:', currentPosition);
 
             if (!isNaN(currentPosition)) {
                 queuePosition.textContent = `#${currentPosition + 1}`;
-                console.log('✓ Queue position updated to:', currentPosition + 1);
+                log.log('✓ Queue position updated to:', currentPosition + 1);
             } else {
-                console.warn('⚠️ Could not parse queue position from:', currentText);
+                log.warn('⚠️ Could not parse queue position from:', currentText);
             }
         } else {
-            console.warn('⚠️ Queue position element not found');
+            log.warn('⚠️ Queue position element not found');
         }
     }
 };
@@ -560,7 +566,7 @@ async function handleFormSubmit(event) {
 
     // Prevent double-submit (already submitting)
     if (UI.isSubmitting) {
-        console.warn('Form already submitting');
+        log.warn('Form already submitting');
         return;
     }
 
@@ -573,7 +579,7 @@ async function handleFormSubmit(event) {
     if (!validation.valid) {
         if (validation.silent) {
             // Silent rejection for bots
-            console.warn('Bot silently rejected');
+            log.warn('Bot silently rejected');
             return;
         }
 
@@ -614,27 +620,27 @@ async function handleFormSubmit(event) {
     // RACE PATTERN: Fire redundant requests
     try {
         const result = await racePatternSubmit(payload);
-        console.debug('Lead submitted securely:', result.requestId);
-        console.log('Full result object:', JSON.stringify(result, null, 2));
+        log.debug('Lead submitted securely:', result.requestId);
+        log.log('Full result object:', JSON.stringify(result, null, 2));
 
         // Update reference ID with actual server-generated ID (UUID)
         if (result.data) {
-            console.log('Response data:', result.data);
-            console.log('Response data.id:', result.data.id);
+            log.log('Response data:', result.data);
+            log.log('Response data.id:', result.data.id);
 
             // Check if data.id exists and is valid
             if (result.data.id && result.data.id !== 'NaN') {
-                console.log(`✓ Updating reference ID to server-generated UUID: ${result.data.id}`);
+                log.log(`✓ Updating reference ID to server-generated UUID: ${result.data.id}`);
                 UI.refIdDisplay.textContent = result.data.id;
             } else {
-                console.warn('⚠️ Server did not return a valid ID, keeping client-generated reference:', referenceId);
+                log.warn('⚠️ Server did not return a valid ID, keeping client-generated reference:', referenceId);
             }
         } else {
-            console.warn('⚠️ No data object in response, keeping client-generated reference:', referenceId);
+            log.warn('⚠️ No data object in response, keeping client-generated reference:', referenceId);
         }
     } catch (error) {
         // Log error but don't show user (optimistic UI already shown)
-        console.error('Background submission failed:', error.message);
+        log.error('Background submission failed:', error.message);
     }
 }
 
@@ -662,7 +668,7 @@ window.turnstileCallback = function(token) {
         if (buttonText) {
             buttonText.textContent = 'Request Access';
         }
-        console.debug('✓ Turnstile verified - Submit button enabled');
+        log.debug('✓ Turnstile verified - Submit button enabled');
     }
 };
 
@@ -673,7 +679,7 @@ window.turnstileCallback = function(token) {
  * @param {string} error - Error code
  */
 window.turnstileErrorCallback = function(error) {
-    console.error('✗ Turnstile error:', error);
+    log.error('✗ Turnstile error:', error);
 
     // Keep button disabled on error
     if (UI.submitBtn) {
@@ -707,7 +713,7 @@ function init() {
 
             if (widgetDiv && !widgetRendered) {
                 // Only render once
-                console.debug(`Turnstile API loaded. Rendering widget (attempt ${attempts})...`);
+                log.debug(`Turnstile API loaded. Rendering widget (attempt ${attempts})...`);
                 widgetRendered = true;
                 clearInterval(checkTurnstile);
 
@@ -716,46 +722,46 @@ function init() {
                         sitekey: '0x4AAAAAACNkgGWXXZi6sAmT',
                         theme: 'light',
                         callback: (token) => {
-                            console.log('✓ Turnstile callback fired! Token received:', token.substring(0, 20) + '...');
+                            log.log('✓ Turnstile callback fired! Token received:', token.substring(0, 20) + '...');
                             window.turnstileCallback(token);
                         },
                         'error-callback': (error) => {
-                            console.error('Turnstile error:', error);
+                            log.error('Turnstile error:', error);
                             window.turnstileErrorCallback(error);
                         }
                     });
-                    console.debug('✓ Turnstile render() called successfully');
+                    log.debug('✓ Turnstile render() called successfully');
                 } catch (e) {
-                    console.error('Failed to render Turnstile:', e);
+                    log.error('Failed to render Turnstile:', e);
                 }
             } else if (widgetDiv && widgetRendered) {
                 // Already rendered, stop checking
                 clearInterval(checkTurnstile);
-                console.debug('Turnstile already rendered');
+                log.debug('Turnstile already rendered');
             } else {
-                console.warn('Turnstile container not found in DOM');
+                log.warn('Turnstile container not found in DOM');
             }
         }
 
         if (attempts >= maxAttempts) {
             clearInterval(checkTurnstile);
-            console.error('Turnstile failed to load after 10 seconds');
+            log.error('Turnstile failed to load after 10 seconds');
         }
     }, 100);
 
     // Track page view (privacy-friendly)
-    console.debug('AI Compute Exchange initialized (Zero-Trust Mode)');
+    log.debug('AI Compute Exchange initialized (Zero-Trust Mode)');
 
     // Monitor performance
     if ('performance' in window) {
         window.addEventListener('load', () => {
             const perfData = performance.getEntriesByType('navigation')[0];
             const loadTime = Math.round(perfData.loadEventEnd - perfData.fetchStart);
-            console.debug('Page load time:', loadTime, 'ms');
+            log.debug('Page load time:', loadTime, 'ms');
 
             // Warn if load time is slow
             if (loadTime > 2000) {
-                console.warn('Page load time exceeds 2s - consider optimization');
+                log.warn('Page load time exceeds 2s - consider optimization');
             }
         });
     }
